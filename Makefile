@@ -1,6 +1,5 @@
-build:
-	# pip install -r requirements.txt
-	pip install "fastapi[all]" "uvicorn[standard]" pydantic
+install-deps:
+	pip install -r requirements.txt
 
 run:
 	uvicorn app:app --reload
