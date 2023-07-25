@@ -2,3 +2,5 @@ fastapi[all]
 uvicorn[standard]
 pydantic
 transformers
+transformers[tf-cpu]
+xformers
