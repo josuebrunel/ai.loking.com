@@ -13,3 +13,8 @@ async def classify(text, ctype="default"):
                     model=MODELS["classify"].get(ctype, "default"))
     result = pipe(text)
     return result
+
+
+async def summarize(text):
+    pipe = pipeline("summarization", model="facebook/bart-large-cnn")
+    return pipe(text)
