@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  api:
+    container_name: loking-api
+    tty: true
+    build:
+      context: .
+    ports:
+      - "5000:8080"
+    networks:
+      - loking
+
+networks:
+  loking:
+    driver: bridge
