@@ -27,3 +27,11 @@ async def classify(payload: Payload):
     img = Image.open(buf)
     result = await processor.classify(img)
     return ApiResponseList(data=result)
+
+
+@app.post("/detect", response_model=ApiResponseList)
+async def detect(payload: Payload):
+    buf = BytesIO(base64.b64decode(payload.b64content))
+    img = Image.open(buf)
+    result = await processor.detect(img)
+    return ApiResponseList(data=result)

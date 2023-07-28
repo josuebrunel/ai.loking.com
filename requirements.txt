@@ -4,3 +4,4 @@ pydantic
 transformers
 transformers[tf-cpu]
 xformers
+timm
