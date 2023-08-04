@@ -23,6 +23,11 @@ class QuestionAnswer(BaseModel):
     questions: list[str]
 
 
+class Label(BaseModel):
+    text: str
+    labels: list[str]
+
+
 @app.get("/", response_model=ApiResponse)
 async def desc():
     return ApiResponse(data={"app": "text"})
@@ -56,3 +61,11 @@ async def answer_question(payload: QuestionAnswer):
         answer = await processors.answer_question(payload.text, question)
         answers.append({"question": question, "answer": answer})
     return ApiResponse(data=answers)
+
+
+@app.post("/label", response_model=ApiResponse)
+async def label(payload: Label, multi_label=True):
+    result = await processors.zero_shot_classify(payload.text,
+                                                 payload.labels,
+                                                 multi_label=multi_label)
+    return ApiResponse(data=result)
