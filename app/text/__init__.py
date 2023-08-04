@@ -18,6 +18,11 @@ class Text(BaseModel):
         return v
 
 
+class QuestionAnswer(BaseModel):
+    text: str
+    questions: list[str]
+
+
 @app.get("/", response_model=ApiResponse)
 async def desc():
     return ApiResponse(data={"app": "text"})
@@ -42,3 +47,12 @@ async def summarize(payload: Text):
     text = payload.text
     result = await processors.summarize(text)
     return ApiResponse(data=result[0])
+
+
+@app.post("/answer-question", response_model=ApiResponse)
+async def answer_question(payload: QuestionAnswer):
+    answers = []
+    for question in payload.questions:
+        answer = await processors.answer_question(payload.text, question)
+        answers.append({"question": question, "answer": answer})
+    return ApiResponse(data=answers)

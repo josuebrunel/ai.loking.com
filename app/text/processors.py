@@ -18,3 +18,9 @@ async def analyze_sentiment(text):
 async def summarize(text):
     pipe = pipeline("summarization", model="facebook/bart-large-cnn")
     return pipe(text)
+
+
+async def answer_question(text, question):
+    pipe = pipeline("question-answering", model="deepset/roberta-base-squad2")
+    result = pipe({"question": question, "context": text})
+    return result
