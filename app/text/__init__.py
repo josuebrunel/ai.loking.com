@@ -24,9 +24,16 @@ async def desc():
 
 
 @app.post("/classify", response_model=ApiResponseList)
-async def classify(payload: list[Text], ctype: str = "default"):
+async def classify(payload: list[Text]):
     text = [p.text for p in payload]
-    result = await processors.classify(text, ctype)
+    result = await processors.classify(text)
+    return ApiResponse(data=result)
+
+
+@app.post("/sentiment-analyze", response_model=ApiResponseList)
+async def sentiment_analyze(payload: list[Text]):
+    text = [p.text for p in payload]
+    result = await processors.analyze_sentiment(text)
     return ApiResponse(data=result)
 
 

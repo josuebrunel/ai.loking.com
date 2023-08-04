@@ -1,16 +1,16 @@
 from transformers import pipeline
 
-MODELS = {
-    "classify": {
-        "default": "distilbert-base-uncased-finetuned-sst-2-english",
-        "emotions": "SamLowe/roberta-base-go_emotions"
-    }
-}
 
-
-async def classify(text, ctype="default"):
+async def classify(text):
     pipe = pipeline("text-classification",
-                    model=MODELS["classify"].get(ctype, "default"))
+                    model="distilbert-base-uncased-finetuned-sst-2-english")
+    result = pipe(text)
+    return result
+
+
+async def analyze_sentiment(text):
+    pipe = pipeline("text-classification",
+                    model="SamLowe/roberta-base-go_emotions")
     result = pipe(text)
     return result
 
