@@ -8,7 +8,7 @@ from app.response import ApiResponse, ApiResponseList
 app = FastAPI(title="Text processing app")
 
 
-class Text(BaseModel):
+class TextRequest(BaseModel):
     text: str
 
     @validator("text")
@@ -18,14 +18,40 @@ class Text(BaseModel):
         return v
 
 
-class QuestionAnswer(BaseModel):
+class QuestionAnswerRequest(BaseModel):
     text: str
     questions: list[str]
 
 
-class Label(BaseModel):
+class Answer(BaseModel):
+    score: float
+    start: int
+    end: int
+    answer: str
+
+
+class QuestionAnswer(BaseModel):
+    question: str
+    answer: Answer
+
+
+class QuestionAnswerResponse(ApiResponse):
+    data: list[QuestionAnswer]
+
+
+class LabelRequest(BaseModel):
     text: str
     labels: list[str]
+
+
+class LabelOutput(BaseModel):
+    sequence: str
+    labels: list[str]
+    scores: list[float]
+
+
+class LabelResponse(ApiResponse):
+    data: LabelOutput
 
 
 @app.get("/", response_model=ApiResponse)
@@ -34,38 +60,38 @@ async def desc():
 
 
 @app.post("/classify", response_model=ApiResponseList)
-async def classify(payload: list[Text]):
+async def classify(payload: list[TextRequest]):
     text = [p.text for p in payload]
     result = await processors.classify(text)
     return ApiResponse(data=result)
 
 
 @app.post("/sentiment-analyze", response_model=ApiResponseList)
-async def sentiment_analyze(payload: list[Text]):
+async def sentiment_analyze(payload: list[TextRequest]):
     text = [p.text for p in payload]
     result = await processors.analyze_sentiment(text)
     return ApiResponse(data=result)
 
 
 @app.post("/summarize", response_model=ApiResponse)
-async def summarize(payload: Text):
+async def summarize(payload: TextRequest):
     text = payload.text
     result = await processors.summarize(text)
     return ApiResponse(data=result[0])
 
 
-@app.post("/answer-question", response_model=ApiResponse)
-async def answer_question(payload: QuestionAnswer):
+@app.post("/answer-question", response_model=QuestionAnswerResponse)
+async def answer_question(payload: QuestionAnswerRequest):
     answers = []
     for question in payload.questions:
         answer = await processors.answer_question(payload.text, question)
         answers.append({"question": question, "answer": answer})
-    return ApiResponse(data=answers)
+    return QuestionAnswerResponse(data=answers)
 
 
-@app.post("/label", response_model=ApiResponse)
-async def label(payload: Label, multi_label=True):
+@app.post("/label", response_model=LabelResponse)
+async def label(payload: LabelRequest, multi_label=True):
     result = await processors.zero_shot_classify(payload.text,
                                                  payload.labels,
                                                  multi_label=multi_label)
-    return ApiResponse(data=result)
+    return LabelResponse(data=result)
