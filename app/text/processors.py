@@ -26,6 +26,12 @@ async def answer_question(text, question):
     return result
 
 
+async def mask_filler(text):
+    pipe = pipeline("fill-mask", model="bert-base-uncased")
+    result = pipe(text)
+    return result
+
+
 async def zero_shot_classify(text, labels, multi_label=True):
     classifier = pipeline("zero-shot-classification",
                           model="MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli")

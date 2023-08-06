@@ -54,6 +54,17 @@ class LabelResponse(ApiResponse):
     data: LabelOutput
 
 
+class MaskFillerOutput(BaseModel):
+    score: float
+    token: int
+    token_str: str
+    sequence: str
+
+
+class MaskFillerResponse(ApiResponse):
+    data: list[MaskFillerOutput]
+
+
 @app.get("/", response_model=ApiResponse)
 async def desc():
     return ApiResponse(data={"app": "text"})
@@ -95,3 +106,9 @@ async def label(payload: LabelRequest, multi_label=True):
                                                  payload.labels,
                                                  multi_label=multi_label)
     return LabelResponse(data=result)
+
+
+@app.post("/mask-filler", response_model=MaskFillerResponse)
+async def mask_filler(payload: TextRequest):
+    result = await processors.mask_filler(payload.text)
+    return MaskFillerResponse(data=result)
