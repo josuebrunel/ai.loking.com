@@ -70,29 +70,29 @@ async def desc():
     return ApiResponse(data={"app": "text"})
 
 
-@app.post("/classify", response_model=ApiResponseList)
-async def classify(payload: list[TextRequest]):
+@app.post("/classifier", response_model=ApiResponseList)
+async def classifier(payload: list[TextRequest]):
     text = [p.text for p in payload]
     result = await processors.classify(text)
     return ApiResponse(data=result)
 
 
-@app.post("/sentiment-analyze", response_model=ApiResponseList)
-async def sentiment_analyze(payload: list[TextRequest]):
+@app.post("/sentiment-analyzer", response_model=ApiResponseList)
+async def sentiment_analyzer(payload: list[TextRequest]):
     text = [p.text for p in payload]
     result = await processors.analyze_sentiment(text)
     return ApiResponse(data=result)
 
 
-@app.post("/summarize", response_model=ApiResponse)
-async def summarize(payload: TextRequest):
+@app.post("/summarizer", response_model=ApiResponse)
+async def summarizer(payload: TextRequest):
     text = payload.text
     result = await processors.summarize(text)
     return ApiResponse(data=result[0])
 
 
-@app.post("/answer-question", response_model=QuestionAnswerResponse)
-async def answer_question(payload: QuestionAnswerRequest):
+@app.post("/question-answering", response_model=QuestionAnswerResponse)
+async def question_answering(payload: QuestionAnswerRequest):
     answers = []
     for question in payload.questions:
         answer = await processors.answer_question(payload.text, question)
@@ -100,8 +100,8 @@ async def answer_question(payload: QuestionAnswerRequest):
     return QuestionAnswerResponse(data=answers)
 
 
-@app.post("/label", response_model=LabelResponse)
-async def label(payload: LabelRequest, multi_label=True):
+@app.post("/labelizer", response_model=LabelResponse)
+async def labelizer(payload: LabelRequest, multi_label=True):
     result = await processors.zero_shot_classify(payload.text,
                                                  payload.labels,
                                                  multi_label=multi_label)
