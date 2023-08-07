@@ -8,6 +8,8 @@ services:
       context: .
     ports:
       - "5000:8080"
+    volumes:
+      - ./huggingface:/root/.cache/huggingface
     networks:
       - loking
 
