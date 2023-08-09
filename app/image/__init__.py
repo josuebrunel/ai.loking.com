@@ -12,8 +12,8 @@ from app.response import ApiResponse, ApiResponseList
 app = FastAPI(title="Image processing app")
 
 
-class Payload(BaseModel):
-    b64content: str | None = None
+def uploadfile_to_pil(upfile: UploadFile) -> Image.Image:
+    return Image.open(upfile.file)
 
 
 @app.get("/", response_model=ApiResponse)
@@ -22,26 +22,24 @@ async def desc():
 
 
 @app.post("/classify", response_model=ApiResponseList)
-async def classify(payload: Payload):
-    buf = BytesIO(base64.b64decode(payload.b64content))
-    img = Image.open(buf)
+async def classify(payload: UploadFile):
+    img = uploadfile_to_pil(payload)
     result = await processor.classify(img)
     return ApiResponseList(data=result)
 
 
-@app.post("/detect", response_model=ApiResponseList)
-async def detect(payload: Payload):
-    buf = BytesIO(base64.b64decode(payload.b64content))
-    img = Image.open(buf)
+@app.post("/detect-object", response_model=ApiResponseList)
+async def detect_object(payload: UploadFile):
+    img = uploadfile_to_pil(payload)
     result = await processor.detect(img)
     return ApiResponseList(data=result)
 
 
-@app.post("/segmenter", response_model=ApiResponseList)
-async def segmenter(image: UploadFile):
-    if not image:
+@app.post("/segment", response_model=ApiResponseList)
+async def segment(payload: UploadFile):
+    if not payload:
         return ApiResponse(error="no-file-sent")
-    img = Image.open(image.file)
+    img = uploadfile_to_pil(payload)
     img_format = img.format
     segments = await processor.segment(img)
     result = []
