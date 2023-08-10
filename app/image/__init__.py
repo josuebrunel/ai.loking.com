@@ -52,11 +52,49 @@ def uploadfile_to_pil(upfile: UploadFile) -> Image.Image:
 
 @app.get("/", response_model=ApiResponse)
 async def desc():
+    """
+    Get application description.
+
+    Returns a simple response containing the description of the application.
+
+    Returns:
+    - **ApiResponse**: A response containing the application description.
+
+    Example Response:
+    ```
+    {
+        "data": {
+            "app": "image"
+        }
+    }
+    ```
+    """
     return ApiResponse(data={"app": "image"})
 
 
 @app.post("/classify", response_model=ClassifyResponse)
 async def classify(payload: UploadFile):
+    """
+    Image classification.
+
+    Classify an uploaded image using an image classification model.
+
+    Parameters:
+    - **payload**: The uploaded image file.
+
+    Returns:
+    - **ClassifyResponse**: A response containing classification results for the uploaded image.
+
+    Example Response:
+    ```
+    {
+        "data": [
+            {"score": 0.85, "label": "cat"},
+            {"score": 0.73, "label": "dog"}
+        ]
+    }
+    ```
+    """
     img = uploadfile_to_pil(payload)
     result = await processor.classify(img)
     return ClassifyResponse(data=result)
@@ -64,6 +102,27 @@ async def classify(payload: UploadFile):
 
 @app.post("/detect-object", response_model=DetectObjectResponse)
 async def detect_object(payload: UploadFile):
+    """
+    Object detection.
+
+    Detect objects in an uploaded image.
+
+    Parameters:
+    - **payload**: The uploaded image file.
+
+    Returns:
+    - **DetectObjectResponse**: A response containing object detection results for the uploaded image.
+
+    Example Response:
+    ```
+    {
+        "data": [
+            {"score": 0.85, "label": "cat", "box": {"xmin": 0.1, "ymin": 0.2, "xmax": 0.9, "ymax": 0.8}},
+            {"score": 0.73, "label": "dog", "box": {"xmin": 0.2, "ymin": 0.3, "xmax": 0.8, "ymax": 0.7}}
+        ]
+    }
+    ```
+    """
     img = uploadfile_to_pil(payload)
     result = await processor.detect(img)
     return DetectObjectResponse(data=result)
@@ -71,6 +130,27 @@ async def detect_object(payload: UploadFile):
 
 @app.post("/segment", response_model=SegmentResponse)
 async def segment(payload: UploadFile):
+    """
+    Image segmentation.
+
+    Segment an uploaded image into different regions.
+
+    Parameters:
+    - **payload**: The uploaded image file.
+
+    Returns:
+    - **SegmentResponse**: A response containing image segmentation results for the uploaded image.
+
+    Example Response:
+    ```
+    {
+        "data": [
+            {"label": "sky", "image": "base64_encoded_image"},
+            {"label": "tree", "image": "base64_encoded_image"}
+        ]
+    }
+    ```
+    """
     if not payload:
         return ApiResponse(error="no-file-sent")
     img = uploadfile_to_pil(payload)
