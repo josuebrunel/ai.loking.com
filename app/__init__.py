@@ -2,6 +2,8 @@ import os
 
 from fastapi import FastAPI
 
+from app.settings import settings
+
 from app.audio import app as audio_app
 from app.image import app as image_app
 from app.text import app as text_app
@@ -10,7 +12,7 @@ from app.video import app as video_app
 
 def get_app():
     return FastAPI(
-        debug=os.environ.get("APP_DEBUG", False),
+        debug=settings.DEBUG,
         title="LokingAI",
         version="0.0.1",
     )
