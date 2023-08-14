@@ -1,12 +1,13 @@
 import base64
 from io import BytesIO
 
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, HTTPException
 from PIL import Image
 from pydantic import BaseModel
 
 from app.image import processor
 from app.response import ApiResponse
+from app.settings import settings
 
 app = FastAPI(title="Image processing app")
 
@@ -46,7 +47,15 @@ class SegmentResponse(ApiResponse):
     data: list[SegmentOutput]
 
 
+def validate_file(file: UploadFile) -> UploadFile:
+    if file.content_type not in settings.IMAGE_CTYPES:
+        raise HTTPException(status_code=400, detail="invalid file type")
+    if file.size / (1024 * 1024) > settings.IMAGE_MAXSIZE:
+        raise HTTPException(status_code=400, detail="file size above limit")
+
+
 def uploadfile_to_pil(upfile: UploadFile) -> Image.Image:
+    validate_file(upfile)
     return Image.open(upfile.file)
 
 

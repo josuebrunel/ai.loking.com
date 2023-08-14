@@ -5,7 +5,7 @@ _settings = {
     "LK_DEBUG": (False, bool),
     "LK_IMAGE_CTYPES":
     (["image/jpeg", "image/png", "image/gif", "image/svg+xml"], list),
-    "LK_IMAGE_MAXSIZE": (5 * 1024 * 1024, int),
+    "LK_IMAGE_MAXSIZE": (5, int)  # MB
 }
 
 
