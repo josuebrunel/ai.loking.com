@@ -3,6 +3,7 @@ import os
 from fastapi import FastAPI
 
 from app.settings import settings
+from app.logging import get_logger
 
 from app.audio import app as audio_app
 from app.image import app as image_app
