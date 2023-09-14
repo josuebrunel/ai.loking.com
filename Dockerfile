@@ -10,6 +10,8 @@ RUN         pip install -r requirements.txt
 
 # RUN
 FROM        python:3.11-slim AS run
+RUN         apt update && apt upgrade -y
+RUN         apt install tesseract-ocr -y
 RUN         mkdir /opt/app
 ENV         VIRTUAL_ENV=/opt/app/venv/
 ENV         PATH="$VIRTUAL_ENV/bin:$PATH"
