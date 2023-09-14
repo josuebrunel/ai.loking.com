@@ -1,12 +1,18 @@
 import os
 
+_image_content_types = [
+    "image/jpeg", "image/png", "image/gif", "image/svg+xml"
+]
+
 _settings = {
     "LK_NAME": ("LokingAI", str),
     "LK_DEBUG": (False, bool),
     "LK_LOG_LEVEL": ("INFO", str),
-    "LK_IMAGE_CTYPES":
-    (["image/jpeg", "image/png", "image/gif", "image/svg+xml"], list),
-    "LK_IMAGE_MAXSIZE": (5, int)  # MB
+    "LK_IMAGE_CTYPES": (_image_content_types, list),
+    "LK_IMAGE_MAXSIZE": (5, int),  # MB
+    "LK_DOCUMENT_CONTENT_TYPES":
+    (_image_content_types + ["application/pdf"], list),
+    "LK_DOCUMENT_MAXSIZE": (5, int)  # MB,
 }
 
 

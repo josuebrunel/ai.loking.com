@@ -5,3 +5,5 @@ transformers
 xformers
 timm
 jsonformatter
+pdf2image
+pytesseract
