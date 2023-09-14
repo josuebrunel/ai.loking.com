@@ -4,6 +4,6 @@ pydantic
 transformers
 xformers
 timm
-jsonformatter
+python-json-logger
 pdf2image
 pytesseract

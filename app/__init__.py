@@ -4,7 +4,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.settings import settings
-from app.logging import get_logger
 from app.middleware import LoggingMiddleware
 
 from app.audio import app as audio_app
