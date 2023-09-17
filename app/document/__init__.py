@@ -66,7 +66,7 @@ def desc():
     }
     ```
     """
-    return ApiResponse({"desc": "Document processing app"})
+    return ApiResponse(data={"desc": "Document processing app"})
 
 
 @app.post("/answer-questions", response_model=DocumentQuestionAnswerResponse)
