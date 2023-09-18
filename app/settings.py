@@ -12,7 +12,8 @@ _settings = {
     "LK_IMAGE_MAXSIZE": (5, int),  # MB
     "LK_DOCUMENT_CONTENT_TYPES":
     (_image_content_types + ["application/pdf"], list),
-    "LK_DOCUMENT_MAXSIZE": (5, int)  # MB,
+    "LK_DOCUMENT_MAXSIZE": (5, int),  # MB
+    "LK_REDIS_URL": ("redis://127.0.0.1:6379", str),
 }
 
 

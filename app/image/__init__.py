@@ -2,6 +2,7 @@ import base64
 from io import BytesIO
 
 from fastapi import FastAPI, UploadFile, HTTPException
+from fastapi_redis_cache import cache
 from PIL import Image
 from pydantic import BaseModel
 
@@ -82,6 +83,7 @@ async def desc():
 
 
 @app.post("/classify", response_model=ClassifyResponse)
+@cache(expire=30)
 async def classify(payload: UploadFile):
     """
     Image classification.
@@ -110,6 +112,7 @@ async def classify(payload: UploadFile):
 
 
 @app.post("/detect-object", response_model=DetectObjectResponse)
+@cache(expire=30)
 async def detect_object(payload: UploadFile):
     """
     Object detection.
@@ -138,6 +141,7 @@ async def detect_object(payload: UploadFile):
 
 
 @app.post("/segment", response_model=SegmentResponse)
+@cache(expire=30)
 async def segment(payload: UploadFile):
     """
     Image segmentation.

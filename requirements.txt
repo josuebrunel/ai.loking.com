@@ -7,3 +7,4 @@ timm
 python-json-logger
 pdf2image
 pytesseract
+fastapi-redis-cache

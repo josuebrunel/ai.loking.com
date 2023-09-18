@@ -1,6 +1,7 @@
 from typing import Annotated, List
 
 from fastapi import FastAPI, Form, HTTPException, UploadFile
+from fastapi_redis_cache import cache
 from pdf2image import convert_from_bytes
 from PIL import Image
 from pydantic import BaseModel
@@ -48,6 +49,7 @@ def validate_file(file: UploadFile) -> UploadFile:
 
 
 @app.get("/", response_model=ApiResponse)
+@cache(expire=30)
 def desc():
     """
     Get application description.

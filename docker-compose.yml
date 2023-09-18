@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  redis:
+    image: redis:latest
+    container_name: loking-redis
+    restart: always
+    ports:
+      - '6380:6379'
+    networks:
+      - loking
   api:
     container_name: loking-api
     tty: true
@@ -12,6 +20,9 @@ services:
       - ./huggingface:/root/.cache/huggingface
     networks:
       - loking
+    restart: always
+    environment:
+      LK_REDIS_URL: redis://redis:6379
 
 networks:
   loking:

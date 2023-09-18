@@ -1,7 +1,9 @@
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+
+from fastapi_redis_cache import FastApiRedisCache
 
 from app.settings import settings
 from app.middleware import LoggingMiddleware
@@ -36,3 +38,12 @@ app.mount("/image", image_app)
 app.mount("/text", text_app)
 app.mount("/video", video_app)
 app.mount("/document", document_app)
+
+
+@app.on_event("startup")
+def app_startup():
+    redis_cache = FastApiRedisCache()
+    redis_cache.init(host_url=os.environ.get("REDIS_URL", settings.REDIS_URL),
+                     prefix=f"{settings.NAME}-cache",
+                     response_header=f"X-{settings.NAME}-Cache",
+                     ignore_arg_types=[Request, Response])

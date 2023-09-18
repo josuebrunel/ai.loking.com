@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, validator
 
+from fastapi_redis_cache import cache
+
 from app.text import processors
 from app.response import ApiResponse, ApiResponseList
 
@@ -66,6 +68,7 @@ class MaskFillerResponse(ApiResponse):
 
 
 @app.get("/", response_model=ApiResponse)
+@cache()
 async def desc():
     """
     Get application description.
@@ -88,6 +91,7 @@ async def desc():
 
 
 @app.post("/classifier", response_model=ApiResponseList)
+@cache(expire=30)
 async def classifier(payload: list[TextRequest]):
     """
     Text classification.
@@ -129,6 +133,7 @@ async def classifier(payload: list[TextRequest]):
 
 
 @app.post("/sentiment-analyzer", response_model=ApiResponseList)
+@cache(expire=30)
 async def sentiment_analyzer(payload: list[TextRequest]):
     """
     Sentiment analysis.
@@ -177,6 +182,7 @@ async def sentiment_analyzer(payload: list[TextRequest]):
 
 
 @app.post("/summarizer", response_model=ApiResponse)
+@cache(expire=30)
 async def summarizer(payload: TextRequest):
     """
     Text summarization.
@@ -212,6 +218,7 @@ async def summarizer(payload: TextRequest):
 
 
 @app.post("/question-answering", response_model=QuestionAnswerResponse)
+@cache(expire=30)
 async def question_answering(payload: QuestionAnswerRequest):
     """
     Question answering.
@@ -268,6 +275,7 @@ async def question_answering(payload: QuestionAnswerRequest):
 
 
 @app.post("/labelizer", response_model=LabelResponse)
+@cache(expire=30)
 async def labelizer(payload: LabelRequest, multi_label=True):
     """
     Text labeling.
@@ -307,6 +315,7 @@ async def labelizer(payload: LabelRequest, multi_label=True):
 
 
 @app.post("/mask-filler", response_model=MaskFillerResponse)
+@cache(expire=30)
 async def mask_filler(payload: TextRequest):
     """
     Mask filling.
