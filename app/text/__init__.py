@@ -1,11 +1,10 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi_redis_cache import cache
 from pydantic import BaseModel, validator
 
-from fastapi_redis_cache import cache
-
-from app.text import processors
 from app.response import ApiResponse, ApiResponseList
+from app.text import processors
 
 app = FastAPI(title="Text processing app")
 
@@ -65,6 +64,15 @@ class MaskFillerOutput(BaseModel):
 
 class MaskFillerResponse(ApiResponse):
     data: list[MaskFillerOutput]
+
+
+class SentencesSimilarityResponse(ApiResponse):
+
+    class SimilarityScore(BaseModel):
+        sentence: str
+        score: float
+
+    data: list[SimilarityScore]
 
 
 @app.get("/", response_model=ApiResponse)
@@ -377,3 +385,44 @@ async def mask_filler(payload: TextRequest):
     """
     result = await processors.mask_filler(payload.text)
     return MaskFillerResponse(data=result)
+
+
+@app.post("/similarities-detector", response_model=SentencesSimilarityResponse)
+@cache(expire=30)
+async def similarities_detector(sentences: list[str]):
+    """
+    Sentence Similarity Detection.
+
+    Detect the similarity between a list of sentences.
+
+    Parameters:
+    - **sentences**: A list of sentences to compare for similarity.
+
+    Returns:
+    - **SentencesSimilarityResponse**: A response containing similarity scores for each sentence pair.
+
+    Example Request:
+    ```json
+    POST /similarities-detector
+    {
+        "sentences": [
+            "The quick brown fox jumps over the lazy dog.",
+            "A fast fox jumps above the sleeping canine.",
+            "Apples are red, and bananas are yellow."
+        ]
+    }
+    ```
+
+    Example Response:
+    ```json
+    {
+        "data": [
+            {"sentence": "A fast fox jumps above the sleeping canine.", "score": 0.78},
+            {"sentence": "Apples are red, and bananas are yellow.", "score": 0.92}
+        ]
+    }
+    ```
+    """
+
+    result = await processors.similarities_check(sentences)
+    return SentencesSimilarityResponse(data=result)
